@@ -234,6 +234,32 @@ function persist() {
     }).catch(() => {})
 }
 
+// Safari starts an AudioContext only from inside a gesture handler and
+// Firefox only once the page has seen one — a cue that arrives after a
+// Livewire roundtrip (⌘S → save → success notification) would otherwise
+// sit on the suspended context until the next click. So every gesture wakes
+// both engines while it is still running: our sample context directly,
+// Cuelume's private one through an inaudible tick.
+let cuelumePrimed = false
+
+function prime() {
+    const ctx = context()
+
+    if (ctx.state !== 'running') {
+        ctx.resume().catch(() => {})
+    }
+
+    if (! cuelumePrimed || ctx.state !== 'running') {
+        cuelumePrimed = true
+        play('tick', { volume: 0.0001 })
+    }
+}
+
+function primeOnGestures() {
+    document.addEventListener('pointerdown', prime, { capture: true, passive: true })
+    document.addEventListener('keydown', prime, { capture: true, passive: true })
+}
+
 // Cuelume drops sounds until the page has seen a user gesture (browser
 // autoplay policy), which is exactly the situation right after the
 // login/logout redirect. Queue those cues and flush on the first gesture.
@@ -525,6 +551,7 @@ function init() {
 
     observeNotifications()
     observeInteractions()
+    primeOnGestures()
     consumeCueCookie()
 
     // Samples are small; have them decoded before the first cue needs them.

@@ -2,6 +2,14 @@
 
 All notable changes to `Filament AudioFeedback` will be documented in this file.
 
+## v1.3.1 - 2026-09-17
+
+### Fixed
+
+- **Keyboard-triggered cues no longer wait for the next click** ⌨️ — Safari starts audio only inside a gesture handler and Firefox only after one; a cue arriving after a Livewire roundtrip (⌘S → save → notification) sat on the suspended context until the next click. Every keydown and pointerdown now wakes both engines while the gesture runs (the Cuelume one through an inaudible tick). Cuelume 0.2.2.
+
+**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.3.0...v1.3.1
+
 ## v1.3.0 - 2026-09-17
 
 ### What's new
