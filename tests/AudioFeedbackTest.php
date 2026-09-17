@@ -10,6 +10,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cookie;
 
 it('ships sensible default sounds', function () {
@@ -258,4 +259,17 @@ it('accepts custom sample names in per-user overrides', function () {
         ->assertSuccessful();
 
     expect(AudioFeedbackSetting::for($user->getKey())['overrides'])->toBe(['notification.success' => 'shutter']);
+});
+
+it('takes the sidebar shape next to the user menu in the sidebar, the icon button elsewhere', function () {
+    app(PanelRegistry::class)->register(Panel::make()->id('shape')->default()->topbar(false)->plugin(AudioFeedbackPlugin::make()));
+
+    $sidebar = Blade::render('<x-audiofeedback::mute-toggle :sidebar="true" />');
+    $topbar = Blade::render('<x-audiofeedback::mute-toggle />');
+    $menu = Blade::render('<x-audiofeedback::mute-toggle :menu-item="true" />');
+
+    expect($sidebar)->toContain('fi-audiofeedback-sidebar-btn')->not->toContain('fi-icon-btn')
+        ->and($sidebar)->toContain('fi-audiofeedback-sidebar-btn-label')
+        ->and($topbar)->toContain('class="fi-icon-btn"')->not->toContain('fi-audiofeedback-sidebar-btn')
+        ->and($menu)->toContain('fi-dropdown-list-item')->not->toContain('fi-icon-btn');
 });

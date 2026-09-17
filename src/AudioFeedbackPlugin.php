@@ -4,6 +4,7 @@ namespace Blemli\AudioFeedback;
 
 use Closure;
 use Filament\Contracts\Plugin;
+use Filament\Enums\UserMenuPosition;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentAsset;
@@ -288,8 +289,15 @@ class AudioFeedbackPlugin implements Plugin
                 $position->getRenderHook(),
                 fn (): string => ($this->isEnabled() && $this->hasMuteToggle() && $this->getMuteTogglePosition() === $position)
                     ? Blade::render(
-                        '<x-audiofeedback::mute-toggle :menu-item="$menuItem" />',
-                        ['menuItem' => $position->isMenuItem()],
+                        '<x-audiofeedback::mute-toggle :menu-item="$menuItem" :sidebar="$sidebar" />',
+                        [
+                            'menuItem' => $position->isMenuItem(),
+                            // USER_MENU_BEFORE renders inside the sidebar footer when the
+                            // panel keeps its user menu there (no topbar) — the button
+                            // must then sit on the rail's axis like the bell does.
+                            'sidebar' => $position === MuteTogglePosition::UserMenuBefore
+                                && Filament::getUserMenuPosition() === UserMenuPosition::Sidebar,
+                        ],
                     )
                     : '',
             );

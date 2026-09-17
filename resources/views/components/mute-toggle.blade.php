@@ -1,6 +1,11 @@
 @props([
     'menuItem' => false,
+    'sidebar' => false,
 ])
+
+@php
+    $isSidebarCollapsibleOnDesktop = $sidebar && filament()->isSidebarCollapsibleOnDesktop();
+@endphp
 
 <button
     type="button"
@@ -18,10 +23,12 @@
     x-on:click="toggle()"
     x-on:audiofeedback:muted.window="muted = $event.detail.muted"
     x-bind:aria-label="muted ? @js(__('audiofeedback::audiofeedback.unmute')) : @js(__('audiofeedback::audiofeedback.mute'))"
-    @unless ($menuItem)
+    @unless ($menuItem || $sidebar)
         x-tooltip="{ content: muted ? @js(__('audiofeedback::audiofeedback.unmute')) : @js(__('audiofeedback::audiofeedback.mute')), theme: $store.theme }"
     @endunless
-    class="{{ $menuItem ? 'fi-dropdown-list-item' : 'fi-icon-btn' }}"
+    {{-- In the sidebar rail the button takes the shape of Filament's own bell trigger:
+         full width, centred icon, label only while the sidebar is open. --}}
+    class="{{ $menuItem ? 'fi-dropdown-list-item' : ($sidebar ? 'fi-audiofeedback-sidebar-btn' : 'fi-icon-btn') }}"
 >
     {{-- heroicon-o-speaker-wave --}}
     <svg x-show="! muted" class="fi-icon {{ $menuItem ? 'fi-size-md' : 'fi-size-lg' }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -36,6 +43,17 @@
     @if ($menuItem)
         <span
             class="fi-dropdown-list-item-label"
+            x-text="muted ? @js(__('audiofeedback::audiofeedback.unmute')) : @js(__('audiofeedback::audiofeedback.mute'))"
+        ></span>
+    @elseif ($sidebar)
+        <span
+            @if ($isSidebarCollapsibleOnDesktop)
+                x-show="$store.sidebar.isOpen"
+                x-transition:enter="fi-transition-enter"
+                x-transition:enter-start="fi-transition-enter-start"
+                x-transition:enter-end="fi-transition-enter-end"
+            @endif
+            class="fi-audiofeedback-sidebar-btn-label"
             x-text="muted ? @js(__('audiofeedback::audiofeedback.unmute')) : @js(__('audiofeedback::audiofeedback.mute'))"
         ></span>
     @endif

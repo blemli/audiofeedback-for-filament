@@ -11,6 +11,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Notifications\Notification;
+use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Auth\Events\Login;
@@ -56,6 +57,7 @@ class AudioFeedbackServiceProvider extends PackageServiceProvider
     {
         FilamentAsset::register([
             Js::make('audiofeedback', __DIR__ . '/../resources/dist/audiofeedback.js'),
+            Css::make('audiofeedback', __DIR__ . '/../resources/dist/audiofeedback.css'),
         ], 'blemli/filament-audiofeedback');
 
         if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {

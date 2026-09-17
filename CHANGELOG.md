@@ -2,6 +2,14 @@
 
 All notable changes to `Filament AudioFeedback` will be documented in this file.
 
+## v1.3.2 - 2026-09-17
+
+### Fixed
+
+- **Mute button on the sidebar axis** — when the user menu lives in the sidebar (no topbar), the `user-menu-before` toggle rendered as a topbar icon button and sat off-axis in the collapsed rail. It now takes the shape of Filament's own bell trigger (full width, centred icon, label only while the sidebar is open) via a small stylesheet the package registers.
+
+**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.3.1...v1.3.2
+
 ## v1.3.1 - 2026-09-17
 
 ### Fixed
