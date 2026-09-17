@@ -2,6 +2,14 @@
 
 All notable changes to `Filament AudioFeedback` will be documented in this file.
 
+## v1.3.0 - 2026-09-17
+
+### What's new
+
+- **Your own samples** 🎚️ — `->customSound('shutter', asset('audio/shutter.mp3'))` (or `custom_sounds` in the config) registers an audio file under a name that works everywhere a Cuelume cue does: `sounds`, `->sound()`, the per-user profile selects and `Notification::make()->sound()`. Fetched once, decoded with the Web Audio API, played through the same volume and mute controls.
+
+**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.2.0...v1.3.0
+
 ## v1.2.0 - 2026-07-28
 
 ### What's new

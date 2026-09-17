@@ -222,3 +222,40 @@ it('queues a cue cookie on login', function () {
     expect($cookie)->not->toBeNull()
         ->and($cookie->getValue())->toBe('login');
 });
+
+it('registers custom samples next to the cuelume cues', function () {
+    config()->set('audiofeedback.custom_sounds', ['bell' => '/audio/bell.mp3']);
+
+    $plugin = AudioFeedbackPlugin::make()
+        ->customSound('shutter', '/audio/shutter.mp3')
+        ->sound('notification.success', 'shutter');
+
+    expect($plugin->getCustomSounds())->toBe(['bell' => '/audio/bell.mp3', 'shutter' => '/audio/shutter.mp3'])
+        ->and($plugin->getSoundNames())->toContain('chime', 'bell', 'shutter')
+        ->and($plugin->getSounds()['notification.success'])->toBe('shutter');
+});
+
+it('accepts custom sample names in per-user overrides', function () {
+    $this->loadLaravelMigrations();
+    $this->artisan('migrate');
+
+    app(PanelRegistry::class)->register(
+        Panel::make()->id('custom')->default()->plugin(AudioFeedbackPlugin::make()->customSound('shutter', '/audio/shutter.mp3')),
+    );
+
+    $user = User::forceCreate([
+        'name' => 'Dr. Mausiavelli',
+        'email' => 'mouse@example.com',
+        'password' => bcrypt('cheese'),
+    ]);
+
+    $this->actingAs($user)
+        ->postJson(route('audiofeedback.settings'), [
+            'muted' => false,
+            'volume' => 40,
+            'overrides' => ['notification.success' => 'shutter'],
+        ])
+        ->assertSuccessful();
+
+    expect(AudioFeedbackSetting::for($user->getKey())['overrides'])->toBe(['notification.success' => 'shutter']);
+});

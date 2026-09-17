@@ -111,6 +111,18 @@ public function boot(): void
 
 Precedence: config file → `configureUsing()` → fluent calls in the panel provider.
 
+## Your own samples
+
+The fourteen cues are synthesized, but any short audio file (mp3, ogg, wav …) can join the palette under a name of your own:
+
+```php
+AudioFeedbackPlugin::make()
+    ->customSound('shutter', asset('audio/shutter.mp3'))
+    ->sound('notification.success', 'shutter');
+```
+
+Or in the config: `'custom_sounds' => ['shutter' => '/audio/shutter.mp3']`. A registered name works everywhere a cue does — in `sounds`, `->sound()`, the per-user selects on the profile page and `Notification::make()->sound('shutter')`. Samples are fetched once per page, decoded with the Web Audio API and played through the same volume and mute controls; keep them short (well under a second) so they feel like cues, not jingles.
+
 ## Notifications
 
 Notifications automatically play the sound matching their status. Override or silence a single notification:

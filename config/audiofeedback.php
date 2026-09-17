@@ -70,4 +70,12 @@ return [
 
     ],
 
+    // Your own samples (mp3, ogg, wav …), name => URL. A registered name can
+    // be used everywhere a Cuelume cue can: above, in ->sound(), in the
+    // profile selects and in Notification::make()->sound(). Fetched once,
+    // played through the same volume and mute controls.
+    //
+    //     'custom_sounds' => ['shutter' => '/audio/shutter.mp3'],
+    'custom_sounds' => [],
+
 ];

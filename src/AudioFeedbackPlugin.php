@@ -37,6 +37,9 @@ class AudioFeedbackPlugin implements Plugin
     /** @var array<string, string | false> */
     protected array $sounds = [];
 
+    /** @var array<string, string> */
+    protected array $customSounds = [];
+
     public function getId(): string
     {
         return 'audiofeedback';
@@ -165,6 +168,31 @@ class AudioFeedbackPlugin implements Plugin
         return $this;
     }
 
+    /**
+     * Register your own sample (mp3, ogg, wav …) under a name, then use that
+     * name like any Cuelume cue: in the config, ->sound(), the profile
+     * selects and Notification::make()->sound(). The file is fetched once
+     * and played through the same volume and mute controls.
+     *
+     *     ->customSound('shutter', asset('audio/shutter.mp3'))
+     */
+    public function customSound(string $name, string $url): static
+    {
+        $this->customSounds[$name] = $url;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, string>  $sounds  name => URL
+     */
+    public function customSounds(array $sounds): static
+    {
+        $this->customSounds = [...$this->customSounds, ...$sounds];
+
+        return $this;
+    }
+
     public function disable(string ...$events): static
     {
         foreach ($events as $event) {
@@ -233,6 +261,24 @@ class AudioFeedbackPlugin implements Plugin
         return [...config('audiofeedback.sounds', []), ...$this->sounds];
     }
 
+    /**
+     * @return array<string, string> name => URL
+     */
+    public function getCustomSounds(): array
+    {
+        return [...config('audiofeedback.custom_sounds', []), ...$this->customSounds];
+    }
+
+    /**
+     * Every playable name: the Cuelume cues plus the registered samples.
+     *
+     * @return array<int, string>
+     */
+    public function getSoundNames(): array
+    {
+        return [...static::SOUNDS, ...array_keys($this->getCustomSounds())];
+    }
+
     public function register(Panel $panel): void
     {
         // Panels flush their render hooks before plugins boot, so this must
@@ -286,6 +332,7 @@ class AudioFeedbackPlugin implements Plugin
         FilamentAsset::registerScriptData([
             'audiofeedback' => [
                 'sounds' => array_filter($this->getSounds()),
+                'customSounds' => $this->getCustomSounds(),
                 'volume' => $this->getVolume(),
                 'ignoreReducedMotion' => $this->ignoresReducedMotion(),
             ],

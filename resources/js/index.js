@@ -13,6 +13,59 @@ const data = () => window.filamentData?.audiofeedback ?? {}
 
 const sounds = () => data().sounds ?? {}
 
+// Your own samples, registered as name => URL via ->customSound(). They are
+// fetched once, decoded and played through the same volume and mute path as
+// the Cuelume cues.
+const customSounds = () => data().customSounds ?? {}
+
+const isCustomSound = (sound) => Object.prototype.hasOwnProperty.call(customSounds(), sound)
+
+let audioContext
+
+function context() {
+    return audioContext ??= new (window.AudioContext ?? window.webkitAudioContext)()
+}
+
+const buffers = {}
+
+function loadSample(name) {
+    return buffers[name] ??= fetch(customSounds()[name], { credentials: 'same-origin' })
+        .then((response) => response.arrayBuffer())
+        .then((bytes) => context().decodeAudioData(bytes))
+        .catch(() => {
+            delete buffers[name]
+
+            return null
+        })
+}
+
+async function playSample(name) {
+    const buffer = await loadSample(name)
+
+    if (! buffer) {
+        return
+    }
+
+    const ctx = context()
+
+    if (ctx.state === 'suspended') {
+        await ctx.resume().catch(() => {})
+    }
+
+    const source = ctx.createBufferSource()
+    const gain = ctx.createGain()
+
+    source.buffer = buffer
+    gain.gain.value = getVolume() / 100
+    source.connect(gain).connect(ctx.destination)
+    source.start()
+}
+
+// One entry point for both palettes.
+function playAny(sound) {
+    isCustomSound(sound) ? playSample(sound) : play(sound)
+}
+
 // Per-user settings from the database (hydrated server-side). Logged-in
 // users read/write these; guests fall back to localStorage only.
 const userSettings = () => (typeof data().user === 'object' ? data().user : null)
@@ -200,7 +253,7 @@ function cue(event) {
 // Lets the profile UI demo a sound even while muted.
 function preview(sound) {
     setEnabled(true)
-    play(sound)
+    playAny(sound)
     setEnabled(! isMuted())
 }
 
@@ -210,7 +263,7 @@ function playSound(sound) {
     }
 
     if (hasUserActivation()) {
-        play(sound)
+        playAny(sound)
     } else {
         pending.push(sound)
     }
@@ -218,7 +271,7 @@ function playSound(sound) {
 
 function flushPending() {
     while (pending.length) {
-        play(pending.shift())
+        playAny(pending.shift())
     }
 }
 
@@ -474,6 +527,9 @@ function init() {
     observeInteractions()
     consumeCueCookie()
 
+    // Samples are small; have them decoded before the first cue needs them.
+    Object.keys(customSounds()).forEach(loadSample)
+
     document.addEventListener('livewire:navigated', consumeCueCookie)
 
     const flush = () => {
@@ -501,7 +557,8 @@ window.audiofeedback = {
     getOverrides,
     setOverride,
     defaults: sounds,
-    soundNames,
+    customSounds,
+    soundNames: [...soundNames, ...Object.keys(customSounds())],
 }
 
 document.readyState === 'loading'

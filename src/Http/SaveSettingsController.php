@@ -20,7 +20,7 @@ class SaveSettingsController
             'muted' => ['required', 'boolean'],
             'volume' => ['required', 'integer', 'between:0,100'],
             'overrides' => ['sometimes', 'array'],
-            'overrides.*' => ['string', Rule::in([...AudioFeedbackPlugin::SOUNDS, 'off'])],
+            'overrides.*' => ['string', Rule::in([...static::soundNames(), 'off'])],
         ]);
 
         AudioFeedbackSetting::query()->updateOrCreate(
@@ -29,5 +29,16 @@ class SaveSettingsController
         );
 
         return new JsonResponse(['saved' => true]);
+    }
+
+    /**
+     * The cues plus the panel's registered samples — the plain cue list when
+     * the request has no panel context (tests, apps without the plugin).
+     *
+     * @return array<int, string>
+     */
+    protected static function soundNames(): array
+    {
+        return rescue(fn (): array => AudioFeedbackPlugin::get()->getSoundNames(), AudioFeedbackPlugin::SOUNDS, report: false);
     }
 }

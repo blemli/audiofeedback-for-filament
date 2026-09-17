@@ -130,7 +130,7 @@ class SoundSettings extends MyProfileComponent
                 ->placeholder(__('audiofeedback::audiofeedback.profile.default', ['sound' => $default]))
                 ->options([
                     'off' => __('audiofeedback::audiofeedback.profile.off'),
-                    ...array_combine(AudioFeedbackPlugin::SOUNDS, AudioFeedbackPlugin::SOUNDS),
+                    ...array_combine(AudioFeedbackPlugin::get()->getSoundNames(), AudioFeedbackPlugin::get()->getSoundNames()),
                 ])
                 ->live()
                 ->disabled(fn (Get $get): bool => (bool) $get('muted'))
