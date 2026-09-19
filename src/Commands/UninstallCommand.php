@@ -28,7 +28,8 @@ class UninstallCommand extends Command
             config_path('audiofeedback.php'),
             resource_path('views/vendor/audiofeedback'),
             lang_path('vendor/audiofeedback'),
-            public_path('js/blemli/filament-audiofeedback'),
+            public_path('js/blemli/audiofeedback-for-filament'),
+            public_path('css/blemli/audiofeedback-for-filament'),
             ...File::glob(database_path('migrations/*_create_audiofeedback_settings_table.php')),
         ], fn (string $path): bool => file_exists($path)));
 
@@ -84,7 +85,7 @@ class UninstallCommand extends Command
             'Remove AudioFeedbackPlugin::make() from your panel provider(s)',
             'Remove any AudioFeedbackPlugin::configureUsing() calls and ->sound() / ->silent() / ->soundEvent() notification macros',
             $this->envMentionsPackage() ? 'Remove AUDIOFEEDBACK_ENABLED from your .env files' : null,
-            'composer remove blemli/filament-audiofeedback',
+            'composer remove blemli/audiofeedback-for-filament',
             'php artisan optimize:clear — cached config, routes and views may still reference the package',
         ])));
 
@@ -93,7 +94,7 @@ class UninstallCommand extends Command
             $this->components->bulletList($files);
         }
 
-        $this->components->info('Sad to hear us go? 👋 composer require blemli/filament-audiofeedback brings the sounds back anytime.');
+        $this->components->info('Sad to hear us go? 👋 composer require blemli/audiofeedback-for-filament brings the sounds back anytime.');
     }
 
     protected function envMentionsPackage(): bool

@@ -1,5 +1,5 @@
 {
-    "name": "blemli/filament-audiofeedback",
+    "name": "blemli/audiofeedback-for-filament",
     "description": "Delightful, unobtrusive audio feedback for Filament panels, powered by Cuelume.",
     "keywords": [
         "blemli",
@@ -7,12 +7,13 @@
         "filamentphp",
         "filament",
         "filament-plugin",
-        "filament-audiofeedback"
+        "audiofeedback",
+        "audiofeedback-for-filament"
     ],
-    "homepage": "https://github.com/blemli/filament-audiofeedback",
+    "homepage": "https://github.com/blemli/audiofeedback-for-filament",
     "support": {
-        "issues": "https://github.com/blemli/filament-audiofeedback/issues",
-        "source": "https://github.com/blemli/filament-audiofeedback"
+        "issues": "https://github.com/blemli/audiofeedback-for-filament/issues",
+        "source": "https://github.com/blemli/audiofeedback-for-filament"
     },
     "license": "MIT",
     "authors": [

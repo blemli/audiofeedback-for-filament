@@ -12,8 +12,10 @@ it('removes published files and drops the settings table', function () {
     File::put(resource_path('views/vendor/audiofeedback/mute-toggle.blade.php'), '');
     File::ensureDirectoryExists(lang_path('vendor/audiofeedback/en'));
     File::put(lang_path('vendor/audiofeedback/en/audiofeedback.php'), '<?php return [];');
-    File::ensureDirectoryExists(public_path('js/blemli/filament-audiofeedback'));
-    File::put(public_path('js/blemli/filament-audiofeedback/audiofeedback.js'), '');
+    File::ensureDirectoryExists(public_path('js/blemli/audiofeedback-for-filament'));
+    File::put(public_path('js/blemli/audiofeedback-for-filament/audiofeedback.js'), '');
+    File::ensureDirectoryExists(public_path('css/blemli/audiofeedback-for-filament'));
+    File::put(public_path('css/blemli/audiofeedback-for-filament/audiofeedback.css'), '');
     File::put(database_path('migrations/2026_01_01_000000_create_audiofeedback_settings_table.php'), '<?php');
 
     expect(Schema::hasTable('audiofeedback_settings'))->toBeTrue();
@@ -23,7 +25,8 @@ it('removes published files and drops the settings table', function () {
     expect(File::exists(config_path('audiofeedback.php')))->toBeFalse()
         ->and(File::isDirectory(resource_path('views/vendor/audiofeedback')))->toBeFalse()
         ->and(File::isDirectory(lang_path('vendor/audiofeedback')))->toBeFalse()
-        ->and(File::isDirectory(public_path('js/blemli/filament-audiofeedback')))->toBeFalse()
+        ->and(File::isDirectory(public_path('js/blemli/audiofeedback-for-filament')))->toBeFalse()
+        ->and(File::isDirectory(public_path('css/blemli/audiofeedback-for-filament')))->toBeFalse()
         ->and(File::glob(database_path('migrations/*_create_audiofeedback_settings_table.php')))->toBeEmpty()
         ->and(Schema::hasTable('audiofeedback_settings'))->toBeFalse();
 });
@@ -43,6 +46,6 @@ it('reminds about the manual cleanup steps', function () {
 
     expect(Artisan::output())
         ->toContain('Remove AudioFeedbackPlugin::make() from your panel provider(s)')
-        ->toContain('composer remove blemli/filament-audiofeedback')
+        ->toContain('composer remove blemli/audiofeedback-for-filament')
         ->toContain('optimize:clear');
 });

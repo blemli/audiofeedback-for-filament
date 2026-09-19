@@ -47,9 +47,7 @@ class AudioFeedbackServiceProvider extends PackageServiceProvider
             ->runsMigrations()
             ->hasCommand(UninstallCommand::class)
             ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->publishConfigFile()
-                    ->askToStarRepoOnGitHub('blemli/filament-audiofeedback');
+                $command->publishConfigFile();
             });
     }
 
@@ -58,7 +56,7 @@ class AudioFeedbackServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Js::make('audiofeedback', __DIR__ . '/../resources/dist/audiofeedback.js'),
             Css::make('audiofeedback', __DIR__ . '/../resources/dist/audiofeedback.css'),
-        ], 'blemli/filament-audiofeedback');
+        ], 'blemli/audiofeedback-for-filament');
 
         if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
             Route::post('audiofeedback/settings', SaveSettingsController::class)

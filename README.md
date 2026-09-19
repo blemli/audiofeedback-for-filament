@@ -1,8 +1,8 @@
-# Filament AudioFeedback
+ audiofeedback
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/blemli/filament-audiofeedback.svg?style=flat-square)](https://packagist.org/packages/blemli/filament-audiofeedback)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/blemli/filament-audiofeedback/tests.yml?branch=5.x&label=tests&style=flat-square)](https://github.com/blemli/filament-audiofeedback/actions?query=workflow%3Atests+branch%3A5.x)
-[![Total Downloads](https://img.shields.io/packagist/dt/blemli/filament-audiofeedback.svg?style=flat-square)](https://packagist.org/packages/blemli/filament-audiofeedback)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/blemli/audiofeedback-for-filament.svg?style=flat-square)](https://packagist.org/packages/blemli/audiofeedback-for-filament)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/blemli/audiofeedback-for-filament/tests.yml?branch=5.x&label=tests&style=flat-square)](https://github.com/blemli/audiofeedback-for-filament/actions?query=workflow%3Atests+branch%3A5.x)
+[![Total Downloads](https://img.shields.io/packagist/dt/blemli/audiofeedback-for-filament.svg?style=flat-square)](https://packagist.org/packages/blemli/audiofeedback-for-filament)
 
 Delightful, unobtrusive audio feedback for Filament panels, powered by [Cuelume](https://cuelume-site.pages.dev) — fourteen tiny interaction sounds synthesized live with the Web Audio API. No audio files, no npm install, nothing to configure unless you want to.
 
@@ -11,7 +11,7 @@ Deliberately not annoying: sounds play for toggles, notifications, form submits,
 ## Installation
 
 ```bash
-composer require blemli/filament-audiofeedback
+composer require blemli/audiofeedback-for-filament
 ```
 
 Add the plugin to your panel — that's it:
@@ -209,7 +209,7 @@ Changed your mind? One command cleans up every published trace — config, views
 php artisan audiofeedback:uninstall
 ```
 
-It finishes with a checklist of the things only you can do: unregister `AudioFeedbackPlugin::make()` from your panel provider(s), drop any `configureUsing()` calls and notification macros, remove `AUDIOFEEDBACK_ENABLED` from `.env`, then `composer remove blemli/filament-audiofeedback` and `php artisan optimize:clear`. It even points out which of your files still mention audiofeedback.
+It finishes with a checklist of the things only you can do: unregister `AudioFeedbackPlugin::make()` from your panel provider(s), drop any `configureUsing()` calls and notification macros, remove `AUDIOFEEDBACK_ENABLED` from `.env`, then `composer remove blemli/audiofeedback-for-filament` and `php artisan optimize:clear`. It even points out which of your files still mention audiofeedback.
 
 ## Testing
 

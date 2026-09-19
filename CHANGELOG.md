@@ -1,6 +1,19 @@
 # Changelog
 
-All notable changes to `Filament AudioFeedback` will be documented in this file.
+All notable changes to `audiofeedback-for-filament` will be documented in this file.
+
+## v1.4.0 - 2026-09-19
+
+### Changed
+
+- **Package renamed to `blemli/audiofeedback-for-filament`** (was `blemli/filament-audiofeedback`). Namespace, plugin class, config key, translation namespace, routes and the `audiofeedback_settings` table are unchanged. To migrate: `composer remove blemli/filament-audiofeedback && composer require blemli/audiofeedback-for-filament`, then `php artisan filament:assets` if you publish assets — they now live under `public/{js,css}/blemli/audiofeedback-for-filament/` (delete the old `blemli/filament-audiofeedback` directories).
+- The install command no longer asks you to star the repository.
+
+### Fixed
+
+- The uninstall command now also removes the published stylesheet directory.
+
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.3.2...v1.4.0
 
 ## v1.3.2 - 2026-09-17
 
@@ -8,7 +21,7 @@ All notable changes to `Filament AudioFeedback` will be documented in this file.
 
 - **Mute button on the sidebar axis** — when the user menu lives in the sidebar (no topbar), the `user-menu-before` toggle rendered as a topbar icon button and sat off-axis in the collapsed rail. It now takes the shape of Filament's own bell trigger (full width, centred icon, label only while the sidebar is open) via a small stylesheet the package registers.
 
-**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.3.1...v1.3.2
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.3.1...v1.3.2
 
 ## v1.3.1 - 2026-09-17
 
@@ -16,7 +29,7 @@ All notable changes to `Filament AudioFeedback` will be documented in this file.
 
 - **Keyboard-triggered cues no longer wait for the next click** ⌨️ — Safari starts audio only inside a gesture handler and Firefox only after one; a cue arriving after a Livewire roundtrip (⌘S → save → notification) sat on the suspended context until the next click. Every keydown and pointerdown now wakes both engines while the gesture runs (the Cuelume one through an inaudible tick). Cuelume 0.2.2.
 
-**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.3.0...v1.3.1
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.3.0...v1.3.1
 
 ## v1.3.0 - 2026-09-17
 
@@ -24,7 +37,7 @@ All notable changes to `Filament AudioFeedback` will be documented in this file.
 
 - **Your own samples** 🎚️ — `->customSound('shutter', asset('audio/shutter.mp3'))` (or `custom_sounds` in the config) registers an audio file under a name that works everywhere a Cuelume cue does: `sounds`, `->sound()`, the per-user profile selects and `Notification::make()->sound()`. Fetched once, decoded with the Web Audio API, played through the same volume and mute controls.
 
-**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.2.0...v1.3.0
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.2.0...v1.3.0
 
 ## v1.2.0 - 2026-07-28
 
@@ -37,7 +50,7 @@ All notable changes to `Filament AudioFeedback` will be documented in this file.
 - **Translations** 🌍 — German, French, Italian and Spanish ship alongside English.
 - CI now runs the supported Laravel 12/13 matrix and is fully green.
 
-**Full changelog**: https://github.com/blemli/filament-audiofeedback/compare/v1.1.0...v1.2.0
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.1.0...v1.2.0
 
 ## 1.1.0 - 2026-07-28
 

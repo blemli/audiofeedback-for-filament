@@ -344,7 +344,7 @@ class AudioFeedbackPlugin implements Plugin
                 'volume' => $this->getVolume(),
                 'ignoreReducedMotion' => $this->ignoresReducedMotion(),
             ],
-        ], 'blemli/filament-audiofeedback');
+        ], 'blemli/audiofeedback-for-filament');
 
         $this->registerBreezyProfileSection($panel);
     }
