@@ -42,7 +42,7 @@ Each event maps to the Cuelume sound designed for that exact moment:
 | Toggle switched | `toggle` | Mechanical click-clack |
 | Toggle buttons changed | `toggle-buttons` → `tick` | Crisp instant tick |
 | Slider released / stepped | `slider` → `tick` | Crisp instant tick |
-| Navigation item hovered | `nav.hover` → `whisper` | The quietest option, made for dense lists |
+| Navigation item hovered | `nav.hover` → off | Off by default — opt in with e.g. `whisper`, the quietest option |
 | Form submitted | `loading` | Brief unresolved rising shimmer |
 | Login | `ready` | Focus tick with a harmonic bloom |
 | Logout | `droplet` | Single note gliding down |
@@ -80,7 +80,7 @@ return [
     'sounds' => [
         'notification.success' => 'success',
         'toggle' => 'toggle',
-        'nav.hover' => false, // silence a single event
+        'form.submit' => false, // silence a single event
         // ...
     ],
 ];

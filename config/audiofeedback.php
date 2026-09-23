@@ -49,8 +49,10 @@ return [
         // Releasing (or keyboard-stepping) a slider handle.
         'slider' => 'tick',
 
-        // Hovering a sidebar or topbar navigation item.
-        'nav.hover' => 'whisper',
+        // Hovering a sidebar or topbar navigation item. Off by default: a mouse
+        // sweeping down the sidebar fires it a dozen times. Set a sound (e.g.
+        // 'whisper') to opt in; false also hides it from the profile card.
+        'nav.hover' => false,
 
         // A Livewire form being submitted (login, create, edit, modals, ...).
         'form.submit' => 'loading',

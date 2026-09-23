@@ -2,6 +2,18 @@
 
 All notable changes to `audiofeedback-for-filament` will be documented in this file.
 
+## v1.5.0 - 2026-09-23
+
+### Changed
+
+- **Navigation hover is off by default** 🤫 — `nav.hover` now defaults to `false`: a mouse sweeping down a sidebar fired the whisper a dozen times, which reads as noise, not feedback. The event also disappears from the Breezy «Sounds» card. Opt back in per panel with `->sound('nav.hover', 'whisper')` or in `config/audiofeedback.php`.
+
+### Fixed
+
+- **A disabled event stays silent for everyone** — a per-user override saved while an event was still enabled (e.g. a sound picked for `nav.hover`) no longer brings it back once the panel disables the event; the engine only cues events present in the panel's map.
+
+**Full changelog**: https://github.com/blemli/audiofeedback-for-filament/compare/v1.4.0...v1.5.0
+
 ## v1.4.0 - 2026-09-19
 
 ### Changed

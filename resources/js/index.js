@@ -269,6 +269,12 @@ const hasUserActivation = () =>
     navigator.userActivation?.hasBeenActive !== false
 
 function cue(event) {
+    // A disabled event is gone from the panel's map — a user override saved
+    // while it was still enabled must not bring it back.
+    if (!(event in sounds())) {
+        return
+    }
+
     const sound = getOverrides()[event] ?? sounds()[event]
 
     if (sound && sound !== 'off') {

@@ -22,7 +22,7 @@ it('ships sensible default sounds', function () {
             'toggle' => 'toggle',
             'toggle-buttons' => 'tick',
             'slider' => 'tick',
-            'nav.hover' => 'whisper',
+            'nav.hover' => false,
             'form.submit' => 'loading',
             'login' => 'ready',
             'logout' => 'droplet',
@@ -73,6 +73,11 @@ it('lets the plugin override config sounds fluently', function () {
     expect($plugin->getSounds())
         ->toMatchArray(['toggle' => 'tick', 'form.submit' => false])
         ->and($plugin->getSounds()['login'])->toBe('ready');
+});
+
+it('keeps the navigation hover silent unless a panel opts in', function () {
+    expect(array_filter(AudioFeedbackPlugin::make()->getSounds()))->not->toHaveKey('nav.hover')
+        ->and(AudioFeedbackPlugin::make()->sound('nav.hover', 'whisper')->getSounds()['nav.hover'])->toBe('whisper');
 });
 
 it('applies configureUsing callbacks from a service provider', function () {
