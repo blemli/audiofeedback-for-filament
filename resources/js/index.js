@@ -7,6 +7,9 @@ const MUTED_STORAGE_KEY = 'audiofeedback.muted'
 const VOLUME_STORAGE_KEY = 'audiofeedback.volume'
 const OVERRIDES_STORAGE_KEY = 'audiofeedback.sounds'
 const CUE_COOKIE = 'audiofeedback_cue'
+// A cue already played before the previous page went away — the cookie the
+// server queued for the same event is skipped on the next page.
+const SKIP_CUE_KEY = 'audiofeedback_skip_cue'
 const NOTIFICATION_SOUNDS_COOKIE = 'audiofeedback_notification_sounds'
 
 const data = () => window.filamentData?.audiofeedback ?? {}
@@ -336,7 +339,70 @@ function consumeCueCookie() {
     }
 
     deleteCookie(CUE_COOKIE)
+
+    if (takeSkippedCue() === event) {
+        return
+    }
+
     cue(event)
+}
+
+function takeSkippedCue() {
+    try {
+        const event = sessionStorage.getItem(SKIP_CUE_KEY)
+        sessionStorage.removeItem(SKIP_CUE_KEY)
+
+        return event
+    } catch {
+        return null
+    }
+}
+
+// A cue for a page the user is about to leave: play it here, in the document
+// that has the user's gesture, instead of parking it on the next page until
+// its first click (browser autoplay policy: a fresh document has no
+// activation, whatever started the navigation).
+function cueBeforeLeaving(event) {
+    cue(event)
+
+    try {
+        sessionStorage.setItem(SKIP_CUE_KEY, event)
+    } catch {
+        // No storage: the next page plays the cookie's cue on its first gesture.
+    }
+}
+
+// Livewire redirects after login («Wechsle zu», the login form, a password
+// reset): the response carries the cue cookie while the document still has
+// the click that started the request — play now, delete the cookie, and the
+// next page finds nothing to queue.
+function cueOnLivewireRedirect() {
+    const register = () => {
+        window.Livewire?.interceptRequest?.(({ onRedirect }) => {
+            onRedirect(() => {
+                const event = readCookie(CUE_COOKIE)
+
+                if (! event) {
+                    return
+                }
+
+                deleteCookie(CUE_COOKIE)
+                cueBeforeLeaving(event)
+            })
+        })
+    }
+
+    window.Livewire
+        ? register()
+        : document.addEventListener('livewire:init', register, { once: true })
+}
+
+// Filament's logout is a plain form POST answered by a redirect — the same
+// gate on the login page. The panel hands its logout URL over as script data.
+function isLogoutForm(form) {
+    const logoutUrl = data().logoutUrl
+
+    return !! logoutUrl && form instanceof HTMLFormElement && form.action === logoutUrl
 }
 
 // Notification::make()->sound('sparkle') overrides arrive the same way,
@@ -445,7 +511,15 @@ function observeInteractions() {
         }
     })
 
-    document.addEventListener('submit', () => cue('form.submit'), { capture: true })
+    document.addEventListener('submit', (event) => {
+        if (isLogoutForm(event.target)) {
+            cueBeforeLeaving('logout')
+
+            return
+        }
+
+        cue('form.submit')
+    }, { capture: true })
 
     document.addEventListener('change', (event) => {
         if (event.target instanceof Element && event.target.matches('.fi-fo-toggle-buttons-input')) {
@@ -558,6 +632,7 @@ function init() {
     observeNotifications()
     observeInteractions()
     primeOnGestures()
+    cueOnLivewireRedirect()
     consumeCueCookie()
 
     // Samples are small; have them decoded before the first cue needs them.
@@ -581,6 +656,9 @@ function init() {
 window.audiofeedback = {
     cue,
     play: playSound,
+    // Cues parked for the next gesture — empty right after a login or a
+    // logout redirect, where they used to wait.
+    pending: () => [...pending],
     preview,
     isMuted,
     setMuted,

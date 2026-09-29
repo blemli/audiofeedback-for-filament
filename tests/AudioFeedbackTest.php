@@ -6,6 +6,7 @@ use Blemli\AudioFeedback\MuteTogglePosition;
 use Filament\Notifications\Notification;
 use Filament\Panel;
 use Filament\PanelRegistry;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -277,4 +278,28 @@ it('takes the sidebar shape next to the user menu in the sidebar, the icon butto
         ->and($sidebar)->toContain('fi-audiofeedback-sidebar-btn-label')
         ->and($topbar)->toContain('class="fi-icon-btn"')->not->toContain('fi-audiofeedback-sidebar-btn')
         ->and($menu)->toContain('fi-dropdown-list-item')->not->toContain('fi-icon-btn');
+});
+
+it('plays a redirect cue before the page goes away instead of parking it for the next click', function () {
+    $engine = file_get_contents(__DIR__ . '/../resources/js/index.js');
+    $dist = file_get_contents(__DIR__ . '/../resources/dist/audiofeedback.js');
+
+    // One activation gate only — a second hasBeenActive read elsewhere would
+    // bring the «delayed until the next click» back through the side door.
+    expect(substr_count($engine, 'hasBeenActive'))->toBe(1)
+        ->and($engine)->toContain('interceptRequest', 'onRedirect(', 'cueBeforeLeaving(', 'sessionStorage.setItem(SKIP_CUE_KEY')
+        ->and($dist)->toContain('interceptRequest', 'audiofeedback_skip_cue')
+        ->and($engine)->toContain('pending: () => [...pending]');
+});
+
+it('hands the panel logout url to the script so the logout form cues before leaving', function () {
+    $panel = Panel::make()->id('cues')->path('cues')->plugin(AudioFeedbackPlugin::make());
+    app(PanelRegistry::class)->register($panel);
+    $panel->boot();
+
+    $data = FilamentAsset::getScriptData(['blemli/audiofeedback-for-filament']);
+
+    // The test panel has no routes registered, so the URL resolves to null
+    // here; the key is what the engine reads (a real panel renders its URL).
+    expect($data['audiofeedback'])->toHaveKey('logoutUrl');
 });

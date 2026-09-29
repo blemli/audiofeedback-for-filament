@@ -343,6 +343,9 @@ class AudioFeedbackPlugin implements Plugin
                 'customSounds' => $this->getCustomSounds(),
                 'volume' => $this->getVolume(),
                 'ignoreReducedMotion' => $this->ignoresReducedMotion(),
+                // The logout form is a plain POST: the script cues «logout»
+                // on submit, in the document that has the user's gesture.
+                'logoutUrl' => rescue(fn (): ?string => $panel->getLogoutUrl(), null, false),
             ],
         ], 'blemli/audiofeedback-for-filament');
 

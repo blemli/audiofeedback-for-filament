@@ -2,6 +2,13 @@
 
 All notable changes to `audiofeedback-for-filament` will be documented in this file.
 
+## v1.6.0 - 2026-09-29
+
+### Fixed
+
+- **Login and logout cues play right away** 🔔 — after «Wechsle zu», the login form, a password reset or the logout button the cue used to wait for the first click on the next page: a fresh document has no user activation, so both gates parked it. The engine now hooks Livewire's redirect (`Livewire.interceptRequest` → `onRedirect`) and plays the cookie's cue in the document that still has the click, deletes the cookie and leaves a `sessionStorage` marker so the next page skips it. The plain logout form does the same on `submit` (the panel's logout URL travels as script data). `window.audiofeedback.pending()` exposes the queue — empty on the landing page now. Cuelume stays untouched.
+- Firefox and Safari need the cue before the navigation, Chromium is merely faster — the fix is browser-independent; the switch itself is not delayed (a long tail may be cut when the next page commits).
+
 ## v1.5.0 - 2026-09-23
 
 ### Changed
